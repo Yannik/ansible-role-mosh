@@ -1,0 +1,21 @@
+- name: Install mosh from binary
+  copy: src={{ ansible_architecture }}/{{ item.src }} dest={{ item.dest }} mode={{ item.mode }}
+  with_items:
+   - { src: mosh-client, dest: /usr/local/bin/, mode: 755 }
+   - { src: mosh-server, dest: /usr/local/bin/, mode: 755 }
+   - { src: mosh, dest: /usr/local/bin/, mode: 755 }
+   - { src: mosh.1, dest: /usr/local/share/man/man1/, mode: 644 }
+   - { src: mosh-client.1, dest: /usr/local/share/man/man1/, mode: 644 }
+   - { src: mosh-server.1, dest: /usr/local/share/man/man1/, mode: 644 }
+
+- name: Acquire mosh version
+  shell: /usr/local/bin/mosh --version 2>&1 | head -1
+  ignore_errors: true
+  changed_when: false
+  check_mode: no # fix failure of "Print mosh version" in check mode
+  register: mosh_version
+
+- name: Print mosh version
+  debug:
+    msg: "Mosh Version: {{ mosh_version.stdout }}"
+
